@@ -9,8 +9,9 @@ def main():
 
     # Fill background
     background = pygame.Surface(screen.get_size())
+    background = pygame.image.load("background.png")
     background = background.convert()
-    background.fill((250, 250, 250))
+    # background.fill((250, 250, 250))
 
     # Display some text
     font = pygame.font.Font(None, 36)
@@ -20,7 +21,7 @@ def main():
     background.blit(text, textpos)
 
     # Blit everything to the screen
-    screen.blit(background, (0, 0))
+    screen.blit(background, (1500, 500))
     pygame.display.flip()
 
     # Event loop
