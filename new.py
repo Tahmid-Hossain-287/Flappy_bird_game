@@ -9,8 +9,12 @@ def main():
 
     # Fill background
     background = pygame.Surface(screen.get_size())
+    print(background)
     background = pygame.image.load("background.png")
     background = background.convert()
+    background = pygame.transform.scale(background, (1500, 500))
+    print(pygame.Surface.get_size(background))
+    background.get_rect()
     # background.fill((250, 250, 250))
 
     # Display some text
