@@ -119,44 +119,44 @@ def blitting():
     game_one.screen.blit(game_one.background, game_one.screen_size)
     pygame.display.flip()
 
-    ## Event loop
-    #while True:
-    #    global player_x, player_y
-    #    for event in pygame.event.get():
-    #        if event.type == QUIT:
-    #            return
+    # Event loop
+    while True:
+        global player_x, player_y
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                return
 
-    #    # Code about the input through key presses.
-    #    key = pygame.key.get_pressed()
-    #    if key[K_SPACE] and player_y < 690:
-    #        if player_y > 0:
-    #            player_y -= 5.5 # The bird flies up when the user presses the space key.
+        # Code about the input through key presses.
+        key = pygame.key.get_pressed()
+        if key[K_SPACE] and player_y < 690:
+            if player_y > 0:
+                player_y -= 5.5 # The bird flies up when the user presses the space key.
 
-    #    over = False
+        over = False
 
-    #    if player_y < 690:
-    #        if not key[K_SPACE]:
-    #            player_y += 2 # The bird continues to drop due to gravity.
+        if player_y < 690:
+            if not key[K_SPACE]:
+                player_y += 2 # The bird continues to drop due to gravity.
 
-    #    else:
-    #        # Code the game over section here.
-    #        over = True
-    #        game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
-    #        game_over_pos = game_over.get_rect()
-    #        game_over_pos.centerx = background.get_rect().centerx
-    #        game_over_pos.centery = background.get_rect().centery
-    #        background.blit(game_over, game_over_pos)
+        else:
+            # Code the game over section here.
+            over = True
+            game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
+            game_over_pos = game_over.get_rect()
+            game_over_pos.centerx = background.get_rect().centerx
+            game_over_pos.centery = background.get_rect().centery
+            background.blit(game_over, game_over_pos)
 
-    #    # Update image.
-    #    screen.blit(background, background_rect)
-    #    screen.blit(pipes, (200, 600),pipes_rect)
-    #    screen.blit(bird, (player_x, player_y), bird_rect)
-    #    screen.blit(pipe_obstacle, (170, rand_num),pipe_obstacle_rect)
-    #    pygame.display.flip()
-    #    clock.tick(fps)
-    #    if over == True:
-    #     time.sleep(5)
-    #     return
+        # Update image.
+        screen.blit(background, background_rect)
+        screen.blit(pipes, (200, 600),pipes_rect)
+        screen.blit(bird, (player_x, player_y), bird_rect)
+        screen.blit(pipe_obstacle, (170, rand_num),pipe_obstacle_rect)
+        pygame.display.flip()
+        clock.tick(fps)
+        if over == True:
+         time.sleep(5)
+         return
 
 def main():
     #initialise()

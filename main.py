@@ -14,6 +14,7 @@ def initialise():
     pygame.init()
     global screen, screen_size
     screen_size = (1700, 700)
+    print(f"The size of the window is {screen_size}.")
     screen = pygame.display.set_mode(screen_size)
 
 def _background(): # Fill background
@@ -24,18 +25,19 @@ def _background(): # Fill background
     background = pygame.transform.scale(background, screen_size)
     background_rect = background.get_rect()
 
-
+ 
 def obstacle():
-    global pipes, pipes_rect, pipe_obstacle, pipe_obstacle_rect, obstacle_height, rand_num
+    global pipes, obstacle_start, pipes_rect, pipe_obstacle, pipe_obstacle_rect, obstacle_height, rand_num
+    obstacle_start = 1700
     pipes = pygame.image.load("black_piller.png")
     pipe_obstacle = pygame.Surface((50, 500))
     pipe_obstacle_rect = pipe_obstacle.get_rect()
     pipes_rect = pipes.get_rect()
     pipes = pygame.transform.scale(pipes, (120, 190))
     rand_num = random.randint(1, 100)
-    print(rand_num)
+    print(f"The random number is {rand_num}.")
     obstacle_height = 1700 - rand_num
-    print(obstacle_height)
+    print(f"The height of the obstacle is {obstacle_height}.")
 
 def text():
     # Display some text
@@ -47,15 +49,13 @@ def text():
     background.blit(text, textpos)
 
 
-player_y = 60
-player_x = 60
-
-
 def player():
 
     # Importing the image of the bird.
     global bird, bird_rect
-    global player_x
+    global player_x, player_y
+    player_x = 60
+    player_y = 60
     bird = pygame.image.load("dove.png")
     bird = pygame.transform.flip(bird, True, False)
     bird_rect = bird.get_rect()
@@ -70,24 +70,32 @@ def blitting():
 
     # Event loop
     while True:
-        global player_x, player_y
+        global player_x, player_y, obstacle_start  
         for event in pygame.event.get():
             if event.type == QUIT:
                 return
 
         # Code about the input through key presses.
+        over = False
         key = pygame.key.get_pressed()
-        if key[K_SPACE] and player_y < 690:
+        if key[K_SPACE] and player_y < 695:
             if player_y > 0:
                 player_y -= 5.5 # The bird flies up when the user presses the space key.
 
-        over = False
-
-        if player_y < 690:
+        elif player_y < 695:
             if not key[K_SPACE]:
                 player_y += 2 # The bird continues to drop due to gravity.
 
-        else:
+        elif player_y > 694:
+            # Code the game over section here.
+            over = True
+            game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
+            game_over_pos = game_over.get_rect()
+            game_over_pos.centerx = background.get_rect().centerx
+            game_over_pos.centery = background.get_rect().centery
+            background.blit(game_over, game_over_pos)
+
+        if player_x==obstacle_start: # Code if the position of player and obstacle is same, then game over.
             # Code the game over section here.
             over = True
             game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
@@ -100,7 +108,10 @@ def blitting():
         screen.blit(background, background_rect)
         screen.blit(pipes, (200, 600),pipes_rect)
         screen.blit(bird, (player_x, player_y), bird_rect)
-        screen.blit(pipe_obstacle, (170, rand_num),pipe_obstacle_rect)
+        screen.blit(pipe_obstacle, ((obstacle_start), rand_num),pipe_obstacle_rect)
+        if obstacle_start == -100:
+            obstacle_start = 1700
+        obstacle_start -= 2
         pygame.display.flip()
         clock.tick(fps)
         if over == True:
