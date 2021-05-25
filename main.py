@@ -164,7 +164,6 @@ def blitting():
             # background.blit(game_over, game_over_pos)
 
 
-        check_collision()
         pygame.display.flip()
         clock.tick(fps)
         if over == True:
