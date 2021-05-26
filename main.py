@@ -10,6 +10,10 @@ from pygame.locals import *
 fps = 120
 clock = pygame.time.Clock()
 
+class Game():
+    player_x = 60
+    player_y = 60
+
 def initialise():
     # Initialise screen
     pygame.init()
@@ -49,71 +53,55 @@ def text():
     textpos.centerx = background.get_rect().centerx
     background.blit(text, textpos)
 
+player_y = 60
+player_x = 60
 def player():
-
     # Importing the image of the bird.
-    global bird, bird_rect
-    global player_x, player_y
-    global player_x, player_y, obstacle_start, over
+    global bird, bird_rect, player_y, player_x
+    # player_y = 60
+    # player_x = 60
     over = False
-    player_x = 60
-    player_y = 60
     bird = pygame.image.load("dove.png")
     bird = pygame.transform.flip(bird, True, False)
     bird = pygame.transform.scale(bird, (player_x, player_y))
     bird_rect = bird.get_rect()
 
-    # key = pygame.key.get_pressed()
-    # if key[K_SPACE] and player_y < 695:
-        # if player_y > 0:
-            # player_y -= 6 # The bird flies up when the user presses the space key.
-
-    # elif player_y < 695:
-        # if not key[K_SPACE]:
-            # player_y += 2 # The bird continues to drop due to gravity.
-
-    # # elif player_y > 694:
-        # # # Code the game over section here.
-        # # over = True
-    
-
-    # if player_y > 694:
-        # # Code the game over section here.
-        # over = True
-        # game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
-        # game_over_pos = game_over.get_rect()
-        # game_over_pos.centerx = background.get_rect().centerx
-        # game_over_pos.centery = background.get_rect().centery
-        # background.blit(game_over, game_over_pos)
 
 def check_collision():
-    if bird_rect.colliderect(pipe_obstacle_rect):
-        print("They have touched/collided.")
+    # if bird_rect.colliderect(pipe_obstacle_rect):
+    pass
 
 def blitting():
 
     # Blit everything to the screen
     screen.blit(background, screen_size)
     pygame.display.flip()
-    global over
+    global over, player_x, player_y, obstacle_start  
+
+    # player_x, player_y
 
     # Event loop
     while True:
-        # global player_x, player_y, obstacle_start  
-        # for event in pygame.event.get():
-            # if event.type == QUIT:
-                # return
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                return
 
-        # # Code about the input through key presses.
-        # over = False
-        # key = pygame.key.get_pressed()
-        # if key[K_SPACE] and player_y < 695:
-            # if player_y > 0:
-                # player_y -= 6 # The bird flies up when the user presses the space key.
+        # Extra testing code.
+        # print(player_x, player_y)
+        # bird_rect.x = player_x
+        # bird_rect.y = player_y
+        bird_rect = bird.get_rect()
 
-        # elif player_y < 695:
-            # if not key[K_SPACE]:
-                # player_y += 2 # The bird continues to drop due to gravity.
+        # Code about the input through key presses.
+        over = False
+        key = pygame.key.get_pressed()
+        if key[K_SPACE] and player_y < 695:
+            if player_y > 0:
+                player_y -= 6 # The bird flies up when the user presses the space key.
+
+        elif player_y < 695:
+            if not key[K_SPACE]:
+                player_y += 2 # The bird continues to drop due to gravity.
 
         if player_y > 694:
             # Code the game over section here.
@@ -124,22 +112,8 @@ def blitting():
             game_over_pos.centery = background.get_rect().centery
             background.blit(game_over, game_over_pos)
         
-        # Code the collision logic here.
-        # mask_of_bird = pygame.mask.from_surface(bird)
-        # mask_of_obstacle = pygame.mask.from_surface(pipe_obstacle)
-        # mask_of_bird = pygame.mask.Mask(size=(player_x, player_y))
-        # mask_of_obstacle = pygame.mask.Mask(size=(120, 190))
-        # if mask_of_obstacle.overlap(mask_of_bird, (player_x, player_y)):
-        # if bird_rect.colliderect(pipe_obstacle_rect):
-            # # Code the game over section here.
-            # print("They touched.")
-            # over = True
-            # game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
-            # game_over_pos = game_over.get_rect()
-            # game_over_pos.centerx = background.get_rect().centerx
-            # game_over_pos.centery = background.get_rect().centery
-            # background.blit(game_over, game_over_pos)
-
+        if bird_rect.colliderect(pipe_obstacle_rect):
+            print("They have touched.")
 
         # Update image.
         global obstacle_start
@@ -150,18 +124,6 @@ def blitting():
         if obstacle_start == -100:
             obstacle_start = 1700
         obstacle_start -= 2
-
-
-        # if mask_of_obstacle.overlap(mask_of_bird, (player_x, player_y)):
-        # if bird_rect.colliderect(pipe_obstacle_rect):
-            # # Code the game over section here.
-            # print("They touched.")
-            # over = True
-            # game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
-            # game_over_pos = game_over.get_rect()
-            # game_over_pos.centerx = background.get_rect().centerx
-            # game_over_pos.centery = background.get_rect().centery
-            # background.blit(game_over, game_over_pos)
 
 
         pygame.display.flip()
