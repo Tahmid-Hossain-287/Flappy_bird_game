@@ -82,11 +82,11 @@ class Game:
 
     def obstacle(self):
         #global pipes, pipes_rect, pipe_obstacle, pipe_obstacle_rect, obstacle_height, rand_num
-        self.pipes = pygame.image.load("black_piller.png")
+        # self.pipes = pygame.image.load("black_piller.png")
         self.pipe_obstacle = pygame.Surface((50, 500))
         self.pipe_obstacle_rect = self.pipe_obstacle.get_rect()
-        self.pipes_rect = self.pipes.get_rect()
-        self.pipes = pygame.transform.scale(self.pipes, (120, 190))
+        # self.pipes_rect = self.pipes.get_rect()
+        # self.pipes = pygame.transform.scale(self.pipes, (120, 190))
         self.rand_num = random.randint(1, 100)
         print(self.rand_num)
         self.obstacle_height = 1700 - self.rand_num
@@ -108,6 +108,8 @@ class Game:
         self.bird = pygame.transform.flip(self.bird, True, False)
         self.bird_rect = self.bird.get_rect()
         self.bird = pygame.transform.scale(self.bird, (self.player_x, self.player_y))
+        self.bird_rect.x = 60
+        self.bird_rect.y = 60
 
 
 class Blit(Game):
@@ -129,34 +131,33 @@ class Blit(Game):
 
             # Code about the input through key presses.
             key = pygame.key.get_pressed()
-            if key[K_SPACE] and game_one.player_y < 690:
-                if game_one.player_y > 0:
-                    game_one.player_y -= 5.5 # The bird flies up when the user presses the space key.
+            if key[K_SPACE] and game_one.bird_rect.y < 690:
+                if game_one.bird_rect.y > 0:
+                    game_one.bird_rect.y -= 5.5 # The bird flies up when the user presses the space key.
 
-            game_one.over = False
 
-            if game_one.player_y < 690:
+            if game_one.bird_rect.y < 695:
                 if not key[K_SPACE]:
-                    game_one.player_y += 2 # The bird continues to drop due to gravity.
+                    game_one.bird_rect.y += 2 # The bird continues to drop due to gravity.
 
-            else:
-            # Code the game game_one.over section here.
+            if game_one.bird_rect.y >= 694:
+            # Code the game over section here.
                 game_one.over = True
-                game_one.over = pygame.font.Font(None, 100).render("Game game_one.over!", 1, (255, 0, 0))
-                game_one.over_pos = game_one.over.get_rect()
-                game_one.over_pos.centerx = game_one.background.get_rect().centerx
-                game_one.over_pos.centery = game_one.background.get_rect().centery
-                background.blit(game_one.over, game_one.over_pos)
-
+                game_one.game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
+                game_one.game_over_pos = game_one.game_over.get_rect()
+                game_one.game_over_pos.centerx = game_one.background.get_rect().centerx
+                game_one.game_over_pos.centery = game_one.background.get_rect().centery
+                game_one.background.blit(game_one.game_over, game_one.game_over_pos)
 
             # Update image.
             game_one.screen.blit(game_one.background, game_one.background_rect)
-            game_one.screen.blit(game_one.pipes, (200, 600),game_one.pipes_rect)
-            game_one.screen.blit(game_one.bird, (game_one.player_x, game_one.player_y), game_one.bird_rect)
-            game_one.screen.blit(game_one.pipe_obstacle, (170, game_one.rand_num),game_one.pipe_obstacle_rect)
+            # game_one.screen.blit(game_one.pipes, (200, 500),game_one.pipes_rect)
+            game_one.screen.blit(game_one.bird, (game_one.bird_rect)) 
+            game_one.screen.blit(game_one.pipe_obstacle, (1600, game_one.rand_num),game_one.pipe_obstacle_rect)
             pygame.display.flip()
             clock.tick(fps)
             if game_one.over == True:
+                print("Game over has been initiated.")
                 time.sleep(5)
                 return
 

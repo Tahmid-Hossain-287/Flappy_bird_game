@@ -1,16 +1,13 @@
-new = 50
+def this():
+    new = 50
 
-var = "test"
-def one():
-    # global var
-    print(var)
-
-def two():
-    # global var
-    print(var)
-    clone_of_var = var
     while True:
-        print(var)
+        new -= 1
+        print(new)
+        if new <= 50:
+            print("good")
+        if new == 10:
+            print("finished")
+            return
 
-one()
-two()
+this()
