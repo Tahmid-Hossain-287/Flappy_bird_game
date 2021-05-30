@@ -120,7 +120,7 @@ def blitting():
         screen.blit(background, background_rect)
         screen.blit(pipes, (200, 600),pipes_rect)
         screen.blit(bird, (player_x, player_y), bird_rect)
-        screen.blit(pipe_obstacle, ((obstacle_start), rand_num),pipe_obstacle_rect)
+        screen.blit(pipe_obstacle, ((obstacle_start), rand_num), pipe_obstacle_rect)
         if obstacle_start == -100:
             obstacle_start = 1700
         obstacle_start -= 2

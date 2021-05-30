@@ -87,6 +87,7 @@ class Game:
         self.pipe_obstacle_rect = self.pipe_obstacle.get_rect()
         # self.pipes_rect = self.pipes.get_rect()
         # self.pipes = pygame.transform.scale(self.pipes, (120, 190))
+        self.pipe_obstacle_rect.x = 1700
         self.rand_num = random.randint(1, 100)
         print(self.rand_num)
         self.obstacle_height = 1700 - self.rand_num
@@ -111,10 +112,8 @@ class Game:
         self.bird_rect.x = 60
         self.bird_rect.y = 60
 
-
 class Blit(Game):
     def blitting(self):
-        #global game_one
         # Blit everything to the screen
         game_one.initialise()
         game_one._background()
@@ -136,8 +135,8 @@ class Blit(Game):
                     game_one.bird_rect.y -= 5.5 # The bird flies up when the user presses the space key.
 
 
-            if game_one.bird_rect.y < 695:
-                if not key[K_SPACE]:
+            elif game_one.bird_rect.y < 695:
+                if not key[K_SPACE]: 
                     game_one.bird_rect.y += 2 # The bird continues to drop due to gravity.
 
             if game_one.bird_rect.y >= 694:
@@ -149,18 +148,32 @@ class Blit(Game):
                 game_one.game_over_pos.centery = game_one.background.get_rect().centery
                 game_one.background.blit(game_one.game_over, game_one.game_over_pos)
 
+            
+            # Movement of the obstacle.
+            game_one.pipe_obstacle_rect.x -= 5 # Not working as expected.
+
+            # Check if the player and the obstacle touches or not.
+            if game_one.pipe_obstacle_rect.colliderect(game_one.bird_rect):
+                print("They have touched.")
+                game_one.over = True
+
+
             # Update image.
             game_one.screen.blit(game_one.background, game_one.background_rect)
             # game_one.screen.blit(game_one.pipes, (200, 500),game_one.pipes_rect)
-            game_one.screen.blit(game_one.bird, (game_one.bird_rect)) 
-            game_one.screen.blit(game_one.pipe_obstacle, (1600, game_one.rand_num),game_one.pipe_obstacle_rect)
+            game_one.screen.blit(game_one.bird, (game_one.bird_rect.x, game_one.bird_rect.y)) 
+            # game_one.screen.blit(game_one.pipe_obstacle, (1600, game_one.rand_num), game_one.pipe_obstacle_rect)
+            game_one.screen.blit(game_one.pipe_obstacle, (game_one.pipe_obstacle_rect.x, game_one.pipe_obstacle_rect.y))
             pygame.display.flip()
             clock.tick(fps)
             if game_one.over == True:
-                print("Game over has been initiated.")
+                print("Game Over!")
+                print(game_one.pipe_obstacle_rect.x)
                 time.sleep(5)
+                print(game_one.pipe_obstacle_rect.x)
                 return
 
+            
 game_one = Game()  # Initialised the game class.
 should_blit = Blit()
 
