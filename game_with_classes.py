@@ -103,9 +103,8 @@ class Game:
         # Importing the image of the bird.
         self.bird = pygame.image.load("dove.png")
         self.bird = pygame.transform.flip(self.bird, True, False)
+        self.bird = pygame.transform.scale(self.bird, (self.player_x, self.player_y))
         self.bird_rect = self.bird.get_rect()
-        self.bird = pygame.transform.scale(
-            self.bird, (self.player_x, self.player_y))
         self.bird_rect.x = 60
         self.bird_rect.y = 60
 
@@ -115,13 +114,10 @@ class Game:
 
         # Finding the rect from Mask gives a much accurate result.
         self.bird_rect = pygame.mask.Mask.get_rect(self.mask_of_bird)
-        self.pipe_obstacle_mask_rect = pygame.mask.Mask.get_rect(
-            self.mask_of_obstacle)
-        self.pipe_obstacle_mask_rect.x = 1700
+        # self.pipe_obstacle_mask_rect = pygame.mask.Mask.get_rect(self.mask_of_obstacle)
+        # self.pipe_obstacle_mask_rect.x = 1700
 
-        # if self.mask_of_obstacle.overlap(self.mask_of_bird, (40,0)):
-        #     print("They have touched.")
-        #     self.over = True
+        
 
     def draw_border(self):
         pygame.draw.rect(self.bird, (255, 0, 0), self.bird_rect, width=1)
@@ -155,13 +151,11 @@ class Blit(Game):
             if game_one.bird_rect.y >= 694:
                 # Code the game over section here.
                 game_one.over = True
-                game_one.game_over = pygame.font.Font(
-                    None, 100).render("Game Over!", 1, (255, 0, 0))
+                game_one.game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
                 game_one.game_over_pos = game_one.game_over.get_rect()
                 game_one.game_over_pos.centerx = game_one.background.get_rect().centerx
                 game_one.game_over_pos.centery = game_one.background.get_rect().centery
-                game_one.background.blit(
-                    game_one.game_over, game_one.game_over_pos)
+                game_one.background.blit(game_one.game_over, game_one.game_over_pos)
 
             # Movement of the obstacle.
             game_one.pipe_obstacle_rect.x -= 4
@@ -183,10 +177,8 @@ class Blit(Game):
             game_one.screen.blit(game_one.background, game_one.background_rect)
             # game_one.screen.blit(game_one.bird, game_one.bird_rect)
             # game_one.screen.blit(game_one.pipe_obstacle, (1600, game_one.rand_num), game_one.pipe_obstacle_rect)
-            game_one.screen.blit(
-                game_one.bird, (game_one.bird_rect.x, game_one.bird_rect.y))
-            game_one.screen.blit(
-                game_one.pipe_obstacle, (game_one.pipe_obstacle_rect.x, game_one.pipe_obstacle_rect.y))
+            game_one.screen.blit(game_one.bird, (game_one.bird_rect.x, game_one.bird_rect.y))
+            game_one.screen.blit(game_one.pipe_obstacle, (game_one.pipe_obstacle_rect.x, game_one.pipe_obstacle_rect.y))
             pygame.display.flip()
             clock.tick(fps)
 
@@ -206,7 +198,7 @@ def main():
     game_one.obstacle()
     game_one.text()
     game_one.player()
-    game_one.check_collision()
+    # game_one.check_collision()
     should_blit.blitting()
 
 
