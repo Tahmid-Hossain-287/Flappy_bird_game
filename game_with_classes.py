@@ -13,8 +13,9 @@ from pygame.locals import *
 fps = 120
 clock = pygame.time.Clock()
 
+
 class Game:
-    #The variables needed to initializing screen.
+    # The variables needed to initializing screen.
     screen_size = (1700, 700)
     screen = pygame.display.set_mode(screen_size)
     # The variables needed for the _background method(funciton that is attached to an object).
@@ -39,31 +40,31 @@ class Game:
     bird_rect = None
     over = False
 
-    #def __init__(self):
-        ## The variables needed to initializing screen.
-        #self.screen_size = (1700, 700)
-        #self.screen = pygame.display.set_mode(self.screen_size)
-        ## The variables needed for the _background method(funciton that is attached to an object).
-        #self.background = None
-        #self.background_rect = None
-        ## Vaiables relatd to the position of players.
-        #self.player_y = 60
-        #self.player_x = 60
-        ## Varables related to the obstacle class.
-        #self.pipes = None
-        #self.pipes_rect = None
-        #self.pipe_obstacle = None
-        #self.pipe_obstacle_rect = None
-        #self.obstacle_height = None
-        #self.rand_num = None
-        ## Varables related to the text class.
-        #self.text = None
-        #self.font = None
-        #textpos = None
-        ## Variables ralated to or needed for the player or bird obejct.
-        #self.bird = None
-        #self.bird_rect = None
-        #self.player_x = None
+    # def __init__(self):
+    # The variables needed to initializing screen.
+    #self.screen_size = (1700, 700)
+    #self.screen = pygame.display.set_mode(self.screen_size)
+    # The variables needed for the _background method(funciton that is attached to an object).
+    #self.background = None
+    #self.background_rect = None
+    # Vaiables relatd to the position of players.
+    #self.player_y = 60
+    #self.player_x = 60
+    # Varables related to the obstacle class.
+    #self.pipes = None
+    #self.pipes_rect = None
+    #self.pipe_obstacle = None
+    #self.pipe_obstacle_rect = None
+    #self.obstacle_height = None
+    #self.rand_num = None
+    # Varables related to the text class.
+    #self.text = None
+    #self.font = None
+    #textpos = None
+    # Variables ralated to or needed for the player or bird obejct.
+    #self.bird = None
+    #self.bird_rect = None
+    #self.player_x = None
 
     def initialise(self):
         # Initialise screen
@@ -72,21 +73,18 @@ class Game:
         self.screen_size = (1700, 700)
         self.screen = pygame.display.set_mode(self.screen_size)
 
-    def _background(self): # Fill background
+    def _background(self):  # Fill background
         #global background, background_rect
         self.background = pygame.Surface(self.screen.get_size())
         self.background = pygame.image.load("background.png")
         self.background = self.background.convert()
-        self.background = pygame.transform.scale(self.background, self.screen_size)
+        self.background = pygame.transform.scale(
+            self.background, self.screen_size)
         self.background_rect = self.background.get_rect()
 
     def obstacle(self):
-        #global pipes, pipes_rect, pipe_obstacle, pipe_obstacle_rect, obstacle_height, rand_num
-        # self.pipes = pygame.image.load("black_piller.png")
         self.pipe_obstacle = pygame.Surface((50, 500))
         self.pipe_obstacle_rect = self.pipe_obstacle.get_rect()
-        # self.pipes_rect = self.pipes.get_rect()
-        # self.pipes = pygame.transform.scale(self.pipes, (120, 190))
         self.pipe_obstacle_rect.x = 1700
         self.rand_num = random.randint(1, 100)
         print(self.rand_num)
@@ -95,22 +93,39 @@ class Game:
 
     def text(self):
         # Display some text
-        #global text, font, textpos
         self.font = pygame.font.Font(None, 36)
         self.text = self.font.render("Flappy Bird", 1, (10, 10, 10))
         self.textpos = self.text.get_rect()
         self.textpos.centerx = self.background.get_rect().centerx
         self.background.blit(self.text, self.textpos)
 
-
     def player(self):
         # Importing the image of the bird.
         self.bird = pygame.image.load("dove.png")
         self.bird = pygame.transform.flip(self.bird, True, False)
         self.bird_rect = self.bird.get_rect()
-        self.bird = pygame.transform.scale(self.bird, (self.player_x, self.player_y))
+        self.bird = pygame.transform.scale(
+            self.bird, (self.player_x, self.player_y))
         self.bird_rect.x = 60
         self.bird_rect.y = 60
+
+    def check_collision(self):
+        self.mask_of_bird = pygame.mask.from_surface(self.bird)
+        self.mask_of_obstacle = pygame.mask.from_surface(self.pipe_obstacle)
+
+        # Finding the rect from Mask gives a much accurate result.
+        self.bird_rect = pygame.mask.Mask.get_rect(self.mask_of_bird)
+        self.pipe_obstacle_mask_rect = pygame.mask.Mask.get_rect(
+            self.mask_of_obstacle)
+        self.pipe_obstacle_mask_rect.x = 1700
+
+        # if self.mask_of_obstacle.overlap(self.mask_of_bird, (40,0)):
+        #     print("They have touched.")
+        #     self.over = True
+
+    def draw_border(self):
+        pygame.draw.rect(self.bird, (255, 0, 0), self.bird_rect, width=1)
+
 
 class Blit(Game):
     def blitting(self):
@@ -122,60 +137,68 @@ class Blit(Game):
 
         # Event loop
         while True:
-            # global player_x, player_y
-
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
-
             # Code about the input through key presses.
             key = pygame.key.get_pressed()
             if key[K_SPACE] and game_one.bird_rect.y < 690:
                 if game_one.bird_rect.y > 0:
-                    game_one.bird_rect.y -= 5.5 # The bird flies up when the user presses the space key.
-
+                    # The bird flies up when the user presses the space key.
+                    game_one.bird_rect.y -= 5.5
 
             elif game_one.bird_rect.y < 695:
-                if not key[K_SPACE]: 
-                    game_one.bird_rect.y += 2 # The bird continues to drop due to gravity.
+                if not key[K_SPACE]:
+                    # The bird continues to drop due to gravity.
+                    game_one.bird_rect.y += 2
 
             if game_one.bird_rect.y >= 694:
-            # Code the game over section here.
+                # Code the game over section here.
                 game_one.over = True
-                game_one.game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
+                game_one.game_over = pygame.font.Font(
+                    None, 100).render("Game Over!", 1, (255, 0, 0))
                 game_one.game_over_pos = game_one.game_over.get_rect()
                 game_one.game_over_pos.centerx = game_one.background.get_rect().centerx
                 game_one.game_over_pos.centery = game_one.background.get_rect().centery
-                game_one.background.blit(game_one.game_over, game_one.game_over_pos)
+                game_one.background.blit(
+                    game_one.game_over, game_one.game_over_pos)
 
-            
             # Movement of the obstacle.
-            game_one.pipe_obstacle_rect.x -= 5 # Not working as expected.
+            game_one.pipe_obstacle_rect.x -= 4
+            if game_one.pipe_obstacle_rect.x < -10:
+                game_one.pipe_obstacle_rect.x = 1900
 
             # Check if the player and the obstacle touches or not.
             if game_one.pipe_obstacle_rect.colliderect(game_one.bird_rect):
                 print("They have touched.")
                 game_one.over = True
 
+            # Draws rect around image of pipe obstacle and bird.
+            # pygame.draw.rect(game_one.background, (255, 0, 0), game_one.bird_rect, width=1)
+            # pygame.draw.rect(game_one.background, (255, 0, 0), game_one.pipe_obstacle_rect, width=1)
+            # pygame.display.update()
 
             # Update image.
+            game_one.draw_border()
             game_one.screen.blit(game_one.background, game_one.background_rect)
-            # game_one.screen.blit(game_one.pipes, (200, 500),game_one.pipes_rect)
-            game_one.screen.blit(game_one.bird, (game_one.bird_rect.x, game_one.bird_rect.y)) 
+            # game_one.screen.blit(game_one.bird, game_one.bird_rect)
             # game_one.screen.blit(game_one.pipe_obstacle, (1600, game_one.rand_num), game_one.pipe_obstacle_rect)
-            game_one.screen.blit(game_one.pipe_obstacle, (game_one.pipe_obstacle_rect.x, game_one.pipe_obstacle_rect.y))
+            game_one.screen.blit(
+                game_one.bird, (game_one.bird_rect.x, game_one.bird_rect.y))
+            game_one.screen.blit(
+                game_one.pipe_obstacle, (game_one.pipe_obstacle_rect.x, game_one.pipe_obstacle_rect.y))
             pygame.display.flip()
             clock.tick(fps)
+
             if game_one.over == True:
                 print("Game Over!")
-                print(game_one.pipe_obstacle_rect.x)
                 time.sleep(5)
-                print(game_one.pipe_obstacle_rect.x)
                 return
 
-            
+
 game_one = Game()  # Initialised the game class.
 should_blit = Blit()
+
 
 def main():
     game_one.initialise()
@@ -183,6 +206,9 @@ def main():
     game_one.obstacle()
     game_one.text()
     game_one.player()
+    game_one.check_collision()
     should_blit.blitting()
 
-if __name__ == '__main__': main()
+
+if __name__ == '__main__':
+    main()

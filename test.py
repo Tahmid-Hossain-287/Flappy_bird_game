@@ -108,7 +108,6 @@ while True:
 
     # Check whether the player has intersected with any food squares.
     for food in foods[:]:
-        print(type(food))
         if player.colliderect(food):
             foods.remove(food)
 
@@ -118,4 +117,4 @@ while True:
 
     # Draw the window onto the screen.
     pygame.display.update()
-    mainClock.tick(40)
+    mainClock.tick(240)
