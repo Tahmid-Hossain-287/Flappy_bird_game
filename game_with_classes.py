@@ -69,8 +69,6 @@ class Game:
     def initialise(self):
         # Initialise screen
         pygame.init()
-        #global screen, screen_size
-        self.screen_size = (1700, 700)
         self.screen = pygame.display.set_mode(self.screen_size)
 
     def _background(self):  # Fill background
@@ -87,9 +85,7 @@ class Game:
         self.pipe_obstacle_rect = self.pipe_obstacle.get_rect()
         self.pipe_obstacle_rect.x = 1700
         self.rand_num = random.randint(1, 100)
-        print(self.rand_num)
         self.obstacle_height = 1700 - self.rand_num
-        print(self.obstacle_height)
 
     def text(self):
         # Display some text
@@ -108,20 +104,6 @@ class Game:
         self.bird_rect.x = 60
         self.bird_rect.y = 60
 
-    def check_collision(self):
-        self.mask_of_bird = pygame.mask.from_surface(self.bird)
-        self.mask_of_obstacle = pygame.mask.from_surface(self.pipe_obstacle)
-
-        # Finding the rect from Mask gives a much accurate result.
-        self.bird_rect = pygame.mask.Mask.get_rect(self.mask_of_bird)
-        # self.pipe_obstacle_mask_rect = pygame.mask.Mask.get_rect(self.mask_of_obstacle)
-        # self.pipe_obstacle_mask_rect.x = 1700
-
-        
-
-    def draw_border(self):
-        pygame.draw.rect(self.bird, (255, 0, 0), self.bird_rect, width=1)
-
 
 class Blit(Game):
     def blitting(self):
@@ -136,17 +118,16 @@ class Blit(Game):
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
+
             # Code about the input through key presses.
             key = pygame.key.get_pressed()
             if key[K_SPACE] and game_one.bird_rect.y < 690:
                 if game_one.bird_rect.y > 0:
-                    # The bird flies up when the user presses the space key.
-                    game_one.bird_rect.y -= 5.5
+                    game_one.bird_rect.y -= 6.5 # The bird flies up when the user presses the space key.
 
             elif game_one.bird_rect.y < 695:
                 if not key[K_SPACE]:
-                    # The bird continues to drop due to gravity.
-                    game_one.bird_rect.y += 2
+                    game_one.bird_rect.y += 4 # The bird continues to drop due to gravity.
 
             if game_one.bird_rect.y >= 694:
                 # Code the game over section here.
@@ -167,18 +148,11 @@ class Blit(Game):
                 print("They have touched.")
                 game_one.over = True
 
-            # Draws rect around image of pipe obstacle and bird.
-            # pygame.draw.rect(game_one.background, (255, 0, 0), game_one.bird_rect, width=1)
-            # pygame.draw.rect(game_one.background, (255, 0, 0), game_one.pipe_obstacle_rect, width=1)
-            # pygame.display.update()
 
-            # Update image.
-            game_one.draw_border()
+            # Draws and updates image.
             game_one.screen.blit(game_one.background, game_one.background_rect)
-            # game_one.screen.blit(game_one.bird, game_one.bird_rect)
-            # game_one.screen.blit(game_one.pipe_obstacle, (1600, game_one.rand_num), game_one.pipe_obstacle_rect)
-            game_one.screen.blit(game_one.bird, (game_one.bird_rect.x, game_one.bird_rect.y))
-            game_one.screen.blit(game_one.pipe_obstacle, (game_one.pipe_obstacle_rect.x, game_one.pipe_obstacle_rect.y))
+            game_one.screen.blit(game_one.bird, game_one.bird_rect)
+            game_one.screen.blit(game_one.pipe_obstacle, game_one.pipe_obstacle_rect)
             pygame.display.flip()
             clock.tick(fps)
 
