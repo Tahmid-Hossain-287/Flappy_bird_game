@@ -4,7 +4,8 @@ inside the blitting function.
 '''
 import random  # This is imported for generating obastacles at random height and distance.
 import time
-
+import ctypes
+ctypes.windll.user32.SetProcessDPIAware()
 import pygame
 from pygame.locals import *
 
@@ -16,7 +17,7 @@ clock = pygame.time.Clock()
 
 class Game:
     # The variables needed to initializing screen.
-    screen_size = (1700, 700)
+    screen_size = (1700, 700) # Length of screen is 1700 units and breadth is 700 units.
     screen = pygame.display.set_mode(screen_size)
     # The variables needed for the _background method(funciton that is attached to an object).
     background = None
@@ -76,16 +77,36 @@ class Game:
         self.background = pygame.Surface(self.screen.get_size())
         self.background = pygame.image.load("background.png")
         self.background = self.background.convert()
-        self.background = pygame.transform.scale(
-            self.background, self.screen_size)
+        self.background = pygame.transform.scale(self.background, self.screen_size)
         self.background_rect = self.background.get_rect()
 
     def obstacle(self):
-        self.pipe_obstacle = pygame.Surface((50, 500))
-        self.pipe_obstacle_rect = self.pipe_obstacle.get_rect()
-        self.pipe_obstacle_rect.x = 1700
-        self.rand_num = random.randint(1, 100)
-        self.obstacle_height = 1700 - self.rand_num
+        # Let the gap between upper and lower pipes be 150 units.
+        self.obstacle_width = 50
+        self.obstacle_start_pos = 1700
+
+        # Bottom obstacle.  
+        self.bot_obstacle_length = random.randint(0, 550)
+        self.bot_obstacle = pygame.Surface((self.obstacle_width, self.bot_obstacle_length))
+        self.bot_obstacle_rect = self.bot_obstacle.fill((0,0,0)) # pygame.surface.fill transforms a surface object into a rect object.
+        self.bot_obstacle_rect.x = self.obstacle_start_pos
+        self.bot_obstacle_rect.y = 700 - self.bot_obstacle_length
+
+        # Top obstacle.
+        self.top_obstacle_length = abs(700  -150 -self.bot_obstacle_length)
+        print(f"Width is {self.obstacle_width} and height is {self.top_obstacle_length}")
+        self.top_obstacle = pygame.Surface((self.obstacle_width, self.top_obstacle_length))
+        self.top_obstacle_rect = self.top_obstacle.fill((0,0,0)) # pygame.Surface.get_rect(self.top_obstacle)
+        self.top_obstacle_rect.x = self.obstacle_start_pos
+        self.top_obstacle_rect.y = 0
+
+        # List of both obstacles.
+        self.obstacle_rect_list = [self.top_obstacle_rect, self.bot_obstacle_rect]
+        self.obstacle_list = [self.top_obstacle, self.bot_obstacle]
+
+    def obstacle_pos_update(self):
+        self.top_obstacle_rect.x = self.obstacle_start_pos
+        self.bot_obstacle_rect.x = self.obstacle_start_pos
 
     def text(self):
         # Display some text
@@ -119,42 +140,44 @@ class Blit(Game):
                 if event.type == QUIT:
                     return
 
+
             # Code about the input through key presses.
             key = pygame.key.get_pressed()
             if key[K_SPACE] and game_one.bird_rect.y < 690:
                 if game_one.bird_rect.y > 0:
-                    game_one.bird_rect.y -= 6.5 # The bird flies up when the user presses the space key.
+                    game_one.bird_rect.y -= 4.5 # The bird flies up when the user presses the space key.
 
             elif game_one.bird_rect.y < 695:
                 if not key[K_SPACE]:
                     game_one.bird_rect.y += 4 # The bird continues to drop due to gravity.
 
-            if game_one.bird_rect.y >= 694:
-                # Code the game over section here.
+
+            # Movement of the obstacle.
+            game_one.obstacle_start_pos -= 4
+            if game_one.obstacle_start_pos < -10:
+                # game_one.obstacle_start_pos = 1900
+                game_one.obstacle()
+            game_one.obstacle_pos_update()
+
+            # Draws and updates image.
+            game_one.screen.blit(game_one.background, game_one.background_rect)
+            game_one.screen.blit(game_one.bird, game_one.bird_rect)
+            game_one.screen.blit(game_one.top_obstacle, game_one.top_obstacle_rect)
+            game_one.screen.blit(game_one.bot_obstacle, game_one.bot_obstacle_rect)
+            pygame.display.flip()
+            clock.tick(fps)
+
+
+            # Code the game over section here.
+            if game_one.bird_rect.y >= 694 or game_one.bot_obstacle_rect.colliderect(game_one.bird_rect) or game_one.top_obstacle_rect.colliderect(game_one.bird_rect):
                 game_one.over = True
                 game_one.game_over = pygame.font.Font(None, 100).render("Game Over!", 1, (255, 0, 0))
                 game_one.game_over_pos = game_one.game_over.get_rect()
                 game_one.game_over_pos.centerx = game_one.background.get_rect().centerx
                 game_one.game_over_pos.centery = game_one.background.get_rect().centery
-                game_one.background.blit(game_one.game_over, game_one.game_over_pos)
+                game_one.screen.blit(game_one.game_over, game_one.game_over_pos)
+                pygame.display.flip()
 
-            # Movement of the obstacle.
-            game_one.pipe_obstacle_rect.x -= 4
-            if game_one.pipe_obstacle_rect.x < -10:
-                game_one.pipe_obstacle_rect.x = 1900
-
-            # Check if the player and the obstacle touches or not.
-            if game_one.pipe_obstacle_rect.colliderect(game_one.bird_rect):
-                print("They have touched.")
-                game_one.over = True
-
-
-            # Draws and updates image.
-            game_one.screen.blit(game_one.background, game_one.background_rect)
-            game_one.screen.blit(game_one.bird, game_one.bird_rect)
-            game_one.screen.blit(game_one.pipe_obstacle, game_one.pipe_obstacle_rect)
-            pygame.display.flip()
-            clock.tick(fps)
 
             if game_one.over == True:
                 print("Game Over!")
@@ -172,7 +195,6 @@ def main():
     game_one.obstacle()
     game_one.text()
     game_one.player()
-    # game_one.check_collision()
     should_blit.blitting()
 
 
